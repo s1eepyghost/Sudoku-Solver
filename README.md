@@ -16,7 +16,7 @@ This Sudoku Solver is a JavaScript program designed to solve Sudoku puzzles of v
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/sudoku-solver-js.git
+   git clone https://github.com/s1eepyghost/Sudoku-Solver.git
    cd sudoku-solver-js
    ```
 
