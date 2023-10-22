@@ -1,108 +1,91 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const gridSize = 9;
-    const solveButton = document.getElementById("solve-btn");
-    solveButton.addEventListener('click', solveSudoku);
-    const sudokuGrid = document.getElementById("sudoku-grid");
-    // Create the sudoku grid and input cells
-    for (let row = 0; row < gridSize; row++) {
-        const newRow = document.createElement("tr");
-        for (let col = 0; col < gridSize; col++) {
-            const cell = document.createElement("td");
-            const input = document.createElement("input");
-            input.type = "number";
-            input.className = "cell";
-            input.id = `cell-${row}-${col}`;
-            cell.appendChild(input);
-            newRow.appendChild(cell);
-        }
-        sudokuGrid.appendChild(newRow);
-    }
-});
-async function solveSudoku() {
-    const gridSize = 9;
-    const sudokuArray = [];
-    // Fill the sudokuArray with input values from the grid
-    for (let row = 0; row < gridSize; row++) {
-        sudokuArray[row] = [];
-        for (let col = 0; col < gridSize; col++) {
-            const cellId = `cell-${row}-${col}`;
-            const cellValue = document.getElementById(cellId).value;
-            sudokuArray[row][col] = cellValue !== "" ? parseInt(cellValue) : 0;
-        }
-    }
-    // Identify user-input cells and mark them
-    for (let row = 0; row < gridSize; row++) {
-        for (let col = 0; col < gridSize; col++) {
-            const cellId = `cell-${row}-${col}`;
-            const cell = document.getElementById(cellId);
+var numSelected = null;
+var tileSelected = null;
+var errors = 0;
+var board = [
+    "--74916-5",
+    "2---6-3-9",
+    "-----7-1-",
+    "-586----4",
+    "--3----9-",
+    "--62--187",
+    "9-4-7---2",
+    "67-83----",
+    "81--45---"
+];
+var solution = [
+    "387491625",
+    "241568379",
+    "569327418",
+    "758619234",
+    "123784596",
+    "496253187",
+    "934176852",
+    "675832941",
+    "812945763"
+];
 
-            if (sudokuArray[row][col] !== 0) {
-                cell.classList.add("user-input");
-            }
-        }
-    }
-    // Solve the sudoku and display the solution
-    if (solveSudokuHelper(sudokuArray)) {
-        for (let row = 0; row < gridSize; row++) {
-            for (let col = 0; col < gridSize; col++) {
-                const cellId = `cell-${row}-${col}`;
-                const cell = document.getElementById(cellId);
+window.onload = function () {
+    setGame();
+};
 
-                // Fill in solved values and apply animation
-                if (!cell.classList.contains("user-input")) {
-                    cell.value = sudokuArray[row][col];
-                    cell.classList.add("solved");
-                    await sleep(20); // Add a delay for visualization
-                }
+function setGame() {
+    // Digits 1-9
+    for(let i = 1; i <= 9; i++) {
+        //<div id="i" class="number">1</div>
+        let number = document.createElement("div");
+        number.id = i;
+        number.innerText = i;
+        number.addEventListener("click", selectNumber);
+        number.classList.add("number");
+        document.getElementById("digits").appendChild(number);
+    }
+
+    // Board 9x9
+    for(let r = 0; r < 9; r++) {
+        for(let c = 0; c < 9; c++) {
+            let tile = document.createElement("div");
+            tile.id = r.toString() + "-" + c.toString();
+            if (board[r][c] != "-") {
+                tile.innerText = board[r][c];
+                tile.classList.add("tile-start");
             }
+            if (r == 2 || r == 5) {
+                tile.classList.add("horizontal-line");
+            }
+            if (c == 2 || c == 5) {
+                tile.classList.add("vertical-line");
+            }
+            tile.addEventListener("click", selectTile);
+            tile.classList.add("tile");
+            document.getElementById("board").append(tile);
         }
-    } else {
-        alert("No solution exists for the given Sudoku puzzle.");
     }
 }
-function solveSudokuHelper(board) {
-    const gridSize = 9;
-    for (let row = 0; row < gridSize; row++) {
-        for (let col = 0; col < gridSize; col++) {
-            if (board[row][col] === 0) {
-                for (let num = 1; num <= 9; num++) {
-                    if (isValidMove(board, row, col, num)) {
-                        board[row][col] = num;
 
-                        // Recursively attempt to solve the Sudoku
-                        if (solveSudokuHelper(board)) {
-                            return true; // Puzzle solved
-                        }
+function selectNumber() {
+    if (numSelected != null) {
+        numSelected.classList.remove("number-selected");
+    }
+    numSelected = this;
+    numSelected.classList.add("number-selected");
+}
 
-                        board[row][col] = 0; // Backtrack
-                    }
-                }
-                return false; // No valid number found
-            }
+function selectTile() {
+    if (numSelected) {
+        if (this.innerText != "") {
+            return;
+        }
+
+        // "0-0""0-1".."3-1"
+        let coords = this.id.split("-");
+        let r = parseInt(coords[0]);
+        let c = parseInt(coords[1]);
+
+        if (solution[r][c] == numSelected.id) {
+            this.innerText = numSelected.id;
+        } else {
+            errors += 1;
+            document.getElementById("errors").innerText = errors;
         }
     }
-    return true; // All cells filled
-}
-function isValidMove(board, row, col, num) {
-    const gridSize = 9;
-    // Check row and column for conflicts
-    for (let i = 0; i < gridSize; i++) {
-        if (board[row][i] === num || board[i][col] === num) {
-            return false; // Conflict found
-        }
-    }
-    // Check the 3*3 subgrid for conflicts
-    const startRow = Math.floor(row / 3) * 3;
-    const startCol = Math.floor(col / 3) * 3;
-    for (let i = startRow; i < startRow + 3; i++) {
-        for (let j = startCol; j < startCol + 3; j++) {
-            if (board[i][j] === num) {
-                return false; // Conflict found
-            }
-        }
-    }
-    return true; // No conflicts found
-}
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -29,6 +29,10 @@ This Sudoku Solver is a JavaScript program designed to solve Sudoku puzzles of v
 4. **Click "Solve":**
    Click the "Solve" button, and the solved Sudoku grid will be displayed on the web page.
 
+## Sceenshots
+
+![Sudoku Solver](screenshot\sudoku.png)
+
 ## Example
 
 ```javascript
@@ -63,6 +67,8 @@ const inputGrid = [
 ```
 
 ## Contributing
+
+This project was made in part with Kenny Yip Coding on YouTube (https://www.youtube.com/watch?v=S4uRtTb8U-U)
 
 If you'd like to contribute to the development of this Sudoku Solver, please follow the guidelines in the `CONTRIBUTING.md` file.
 
