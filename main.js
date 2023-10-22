@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const gridSize = 9;
     const solveButton = document.getElementById("solve-btn");
     solveButton.addEventListener('click', solveSudoku);
-
     const sudokuGrid = document.getElementById("sudoku-grid");
     // Create the sudoku grid and input cells
     for (let row = 0; row < gridSize; row++) {
@@ -19,11 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
         sudokuGrid.appendChild(newRow);
     }
 });
-
 async function solveSudoku() {
     const gridSize = 9;
     const sudokuArray = [];
-
     // Fill the sudokuArray with input values from the grid
     for (let row = 0; row < gridSize; row++) {
         sudokuArray[row] = [];
@@ -33,7 +30,6 @@ async function solveSudoku() {
             sudokuArray[row][col] = cellValue !== "" ? parseInt(cellValue) : 0;
         }
     }
-
     // Identify user-input cells and mark them
     for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col < gridSize; col++) {
@@ -45,7 +41,6 @@ async function solveSudoku() {
             }
         }
     }
-
     // Solve the sudoku and display the solution
     if (solveSudokuHelper(sudokuArray)) {
         for (let row = 0; row < gridSize; row++) {
@@ -65,10 +60,8 @@ async function solveSudoku() {
         alert("No solution exists for the given Sudoku puzzle.");
     }
 }
-
 function solveSudokuHelper(board) {
     const gridSize = 9;
-
     for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col < gridSize; col++) {
             if (board[row][col] === 0) {
@@ -88,24 +81,19 @@ function solveSudokuHelper(board) {
             }
         }
     }
-
     return true; // All cells filled
 }
-
 function isValidMove(board, row, col, num) {
     const gridSize = 9;
-
     // Check row and column for conflicts
     for (let i = 0; i < gridSize; i++) {
         if (board[row][i] === num || board[i][col] === num) {
             return false; // Conflict found
         }
     }
-
     // Check the 3*3 subgrid for conflicts
     const startRow = Math.floor(row / 3) * 3;
     const startCol = Math.floor(col / 3) * 3;
-
     for (let i = startRow; i < startRow + 3; i++) {
         for (let j = startCol; j < startCol + 3; j++) {
             if (board[i][j] === num) {
@@ -113,10 +101,8 @@ function isValidMove(board, row, col, num) {
             }
         }
     }
-
     return true; // No conflicts found
 }
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
